@@ -68,13 +68,22 @@ module aludec(
 					default: alucontrol <= 5'b0;
 				endcase
 			end
-			`ANDI_OP: alucontrol <= `AND_CONTROL;
-			`ORI_OP:  alucontrol <= `OR_CONTROL;
-			`XORI_OP: alucontrol <= `XOR_CONTROL;
-			`LUI_OP:  alucontrol <= `LUI_CONTROL;
 
-			`ADDI_OP: alucontrol <= `ADD_CONTROL;
-			`MEM_OP:  alucontrol <= `ADD_CONTROL;
+			// 逻辑运算(I型)
+			`ANDI_OP:  alucontrol <= `AND_CONTROL;
+			`ORI_OP:   alucontrol <= `OR_CONTROL;
+			`XORI_OP:  alucontrol <= `XOR_CONTROL;
+			`LUI_OP:   alucontrol <= `LUI_CONTROL;
+
+			// 算术运算(I型)
+			`ADDI_OP:  alucontrol <= `ADD_CONTROL;
+			`ADDIU_OP: alucontrol <= `ADD_CONTROL;
+			`SLTI_OP:  alucontrol <= `SLT_CONTROL;
+			`SLTIU_OP: alucontrol <= `SLTU_CONTROL;
+
+			// 访存
+			`MEM_OP:   alucontrol <= `ADD_CONTROL;
+			
 			default: alucontrol <= 5'b0;
 		endcase
 	end

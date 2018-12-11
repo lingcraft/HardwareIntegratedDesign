@@ -22,29 +22,29 @@
 
 module controller(
 	input wire clk,rst,
-	//decode stage
+	// decode stage
 	input wire [5:0] opD,functD,
 	output wire pcsrcD,branchD,
 	input wire equalD,
 	output wire jumpD,
 	output wire [1:0] hilowriteD,
 	
-	//execute stage
+	// execute stage
 	input wire flushE,
 	output wire memtoregE,
 	output wire [1:0] alusrcE,
 	output wire regdstE,regwriteE,	
 	output wire [4:0] alucontrolE,
 
-	//mem stage
+	// memory visit stage
 	output wire memtoregM,memwriteM,
 				regwriteM,
-	//write back stage
+	// write back stage
 	output wire memtoregW,regwriteW
 
     );
 	
-	//decode stage
+	// decode stage
 	wire [3:0] aluopD;
 
 
@@ -54,7 +54,7 @@ module controller(
 
 	wire [4:0] alucontrolD;
 
-	//execute stage
+	// execute stage
 	wire memwriteE;
 
 	maindec md(

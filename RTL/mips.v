@@ -41,44 +41,44 @@ module mips(
 
 	controller c(
 		clk,rst,
-		//decode stage
+		// decode stage
 		opD,functD,
 		pcsrcD,branchD,equalD,jumpD,
 		hilowriteD,
-		//execute stage
+		// execute stage
 		flushE,
 		memtoregE,alusrcE,
 		regdstE,regwriteE,	
 		alucontrolE,
-		//mem stage
+		// memory visit stage
 		memtoregM,memwriteM,
 		regwriteM,
-		//write back stage
+		// write back stage
 		memtoregW,regwriteW
 		);
 	datapath dp(
 		clk,rst,
-		//fetch stage
+		// fetch stage
 		pcF,
 		instrF,
-		//decode stage
+		// decode stage
 		pcsrcD,branchD,
 		jumpD,
 		equalD,
 		opD,functD,
 		hilowriteD,
-		//execute stage
+		// execute stage
 		memtoregE,
 		alusrcE,regdstE,
 		regwriteE,
 		alucontrolE,
 		flushE,
-		//mem stage
+		// memory visit stage
 		memtoregM,
 		regwriteM,
 		aluoutM,writedataM,
 		readdataM,
-		//writeback stage
+		// write back stage
 		memtoregW,
 		regwriteW
 	    );

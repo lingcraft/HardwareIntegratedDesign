@@ -27,6 +27,7 @@ module controller(
 	output wire pcsrcD,branchD,
 	input wire equalD,
 	output wire jumpD,
+	output wire [1:0] hilowriteD,
 	
 	//execute stage
 	input wire flushE,
@@ -57,12 +58,13 @@ module controller(
 	wire memwriteE;
 
 	maindec md(
-		opD,
+		opD,functD,
 		memtoregD,memwriteD,
 		branchD,alusrcD,
 		regdstD,regwriteD,
 		jumpD,
-		aluopD
+		aluopD,
+		hilowriteD
 		);
 	aludec ad(functD,aluopD,alucontrolD);
 
@@ -76,12 +78,12 @@ module controller(
 		{memtoregE,memwriteE,alusrcE,regdstE,regwriteE,alucontrolE}
 		);
 	
-	flopr #(11) regM(
+	flopr #(3) regM(
 		clk,rst,
 		{memtoregE,memwriteE,regwriteE},
 		{memtoregM,memwriteM,regwriteM}
 		);
-	flopr #(11) regW(
+	flopr #(2) regW(
 		clk,rst,
 		{memtoregM,regwriteM},
 		{memtoregW,regwriteW}

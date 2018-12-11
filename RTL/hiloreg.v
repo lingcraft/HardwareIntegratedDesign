@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 2017/11/07 13:50:53
+// Create Date: 2017/12/12 11:26:03
 // Design Name: 
-// Module Name: top
+// Module Name: hilo_reg
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,19 +20,32 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module top(
+module hiloreg(
 	input wire clk,rst,
-	output wire[31:0] writedata,dataadr,
-	output wire memwrite
+	input wire [1:0] we,
+	input wire [31:0] hiin,loin,
+	output wire [31:0] hiout,loout
     );
 
-	wire [31:0] pc,instr,readdata;
-	wire [39:0] ascii;
-
-	mips mips(clk,rst,pc,instr,memwrite,dataadr,writedata,readdata);
-	instdec instdec(instr,ascii);
+	reg [31:0] hidata,lodata;
 	
-	inst_mem imem(~clk,pc,instr);
-	data_mem dmem(~clk,{3'b0,memwrite},dataadr,writedata,readdata);
+	always @ (negedge clk)
+	begin
+		if(rst) 
+		begin
+			hidata <= 32'b0;
+			lodata <= 32'b0;
+		end 
+		else
+		begin
+			if (we[1])
+				hidata <= hiin;
+			if (we[0])
+				lodata <= loin;
+		end
+	end
+
+	assign hiout = hidata;
+	assign loout = lodata;
 
 endmodule

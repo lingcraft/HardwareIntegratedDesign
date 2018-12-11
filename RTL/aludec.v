@@ -39,13 +39,19 @@ module aludec(
 					`XOR:	alucontrol <= `XOR_CONTROL;
 					`NOR:	alucontrol <= `NOR_CONTROL;
 
-					// 移位指令
+					// 移位
 					`SLL:	alucontrol <= `SLL_CONTROL;
 					`SRL:	alucontrol <= `SRL_CONTROL;
 					`SRA:	alucontrol <= `SRA_CONTROL;
 					`SLLV:	alucontrol <= `SLLV_CONTROL;
 					`SRLV:	alucontrol <= `SRLV_CONTROL;
 					`SRAV:	alucontrol <= `SRAV_CONTROL;
+
+					// 数据移动
+					`MFHI:	alucontrol <= `MFHI_CONTROL;
+					`MFLO:	alucontrol <= `MFLO_CONTROL;
+					`MTHI:	alucontrol <= `MTHI_CONTROL;
+					`MTLO:	alucontrol <= `MTLO_CONTROL;
 
 					// 算数运算
 					`ADD:	alucontrol <= `ADD_CONTROL;
@@ -68,6 +74,7 @@ module aludec(
 			`LUI_OP:  alucontrol <= `LUI_CONTROL;
 
 			`ADDI_OP: alucontrol <= `ADD_CONTROL;
+			`MEM_OP:  alucontrol <= `ADD_CONTROL;
 			default: alucontrol <= 5'b0;
 		endcase
 	end

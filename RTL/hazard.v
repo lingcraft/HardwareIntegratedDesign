@@ -21,31 +21,35 @@
 
 
 module hazard(
-	// 取指
+	// fetch stage
 	output wire stallF,
-	// 译码
+	// decode stage
 	input wire [4:0] rsD,
 	input wire [4:0] rtD,
 	input wire branchD,
 	output wire forwardaD,
 	output wire forwardbD,
 	output wire stallD,
-	// 执行
+	// execute stage
 	input wire [4:0] rsE,
 	input wire [4:0] rtE,
 	input wire [4:0] writeregE,
 	input wire regwriteE,
 	input wire memtoregE,
+	input wire [1:0] hilowriteE,
 	output reg [1:0] forwardaE,
 	output reg [1:0] forwardbE,
+	output wire [1:0] forwardhiloE,
 	output wire flushE,
-	// 访存
+	// memory visit stage
 	input wire [4:0] writeregM,
 	input wire regwriteM,
 	input wire memtoregM,
-	// 回写
+	input wire [1:0] hilowriteM,
+	// write back stage
 	input wire [4:0] writeregW,
-	input wire regwriteW
+	input wire regwriteW,
+	input wire [1:0] hilowriteW
     );
 
 	wire lwstallD;
@@ -53,6 +57,9 @@ module hazard(
 
 	assign forwardaD = ((rsD != 0) && (rsD == writeregM) && regwriteM);
 	assign forwardbD = ((rtD != 0) && (rtD == writeregM) && regwriteM);
+	assign forwardhiloE = (!hilowriteE && hilowriteM) ? 2'b01:
+						  (!hilowriteE && hilowriteW) ? 2'b10:
+						  2'b00;
 
 	always @ (*)
 	begin
@@ -77,9 +84,9 @@ module hazard(
 	assign lwstallD = memtoregE && ((rtE == rsD) || (rtE == rtD));
 
 	assign branchstallD = branchD && 
-			(regwriteE && 
+			(regwriteE &&
 			((writeregE == rsD) || (writeregE == rtD))|| 
-			memtoregM && 
+			memtoregM &&
 			((writeregM == rsD) || (writeregM == rtD)));
 
 	assign stallF = lwstallD || branchstallD;

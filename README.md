@@ -4,7 +4,7 @@
 
 ### v0.2 实现逻辑运算指令
 1、添加zeroext模块以搭配I型逻辑运算指令，仿照signext的连线连接zeroext。<br>
-2、微改datapath，将相应使用到的mux2改为mux3（增加了零扩展立即数）<br>
+2、微改datapath，将相应使用到的mux2改为mux3（增加了零扩展立即数）。<br>
 3、将alusrc更改为2位，以满足3个srcb来源。<br>
 
 ### v0.3 实现移位指令

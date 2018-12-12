@@ -69,15 +69,14 @@ module maindec(
 			`ORI:	controls <= {10'b1_0_10_0_0_0_0_00, `ORI_OP};
 
 			// 算术运算(I型)
-			`ADDI:	controls <= {10'b1_0_10_0_0_0_0_00, `ADDI_OP};
-			`ADDIU:	controls <= {10'b1_0_10_0_0_0_0_00, `ADDIU_OP};
-			`SLTI:	controls <= {10'b1_0_10_0_0_0_0_00, `SLTI_OP};
-			`SLTIU: controls <= {10'b1_0_10_0_0_0_0_00, `SLTIU_OP};
+			`ADDI:	controls <= {10'b1_0_01_0_0_0_0_00, `ADDI_OP};
+			`ADDIU:	controls <= {10'b1_0_01_0_0_0_0_00, `ADDIU_OP};
+			`SLTI:	controls <= {10'b1_0_01_0_0_0_0_00, `SLTI_OP};
+			`SLTIU: controls <= {10'b1_0_01_0_0_0_0_00, `SLTIU_OP};
 
 			`LW: 	controls <= {10'b1_0_01_0_0_1_0_00, `MEM_OP};
 			`SW: 	controls <= {10'b0_0_01_0_1_0_0_00, `MEM_OP};
 			`BEQ: 	controls <= {10'b0_0_00_1_0_0_0_00, `USELESS_OP};
-			`ADDI: 	controls <= {10'b1_0_01_0_0_0_0_00, `ADDI_OP};
 			`J: 	controls <= {10'b0_0_00_0_0_0_1_00, `USELESS_OP};
 
 			default:controls <= 14'b0;

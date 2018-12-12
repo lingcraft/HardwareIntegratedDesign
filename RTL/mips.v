@@ -38,6 +38,7 @@ module mips(
 
 	wire [4:0] alucontrolE;
 	wire flushE,equalD;
+	wire stallE;
 
 	controller c(
 		clk,rst,
@@ -47,6 +48,7 @@ module mips(
 		hilowriteD,
 		// execute stage
 		flushE,
+		stallE,
 		memtoregE,alusrcE,
 		regdstE,regwriteE,	
 		alucontrolE,
@@ -73,6 +75,7 @@ module mips(
 		regwriteE,
 		alucontrolE,
 		flushE,
+		stallE,
 		// memory visit stage
 		memtoregM,
 		regwriteM,

@@ -41,6 +41,8 @@ module hazard(
 	output reg [1:0] forwardbE,
 	output wire [1:0] forwardhiloE,
 	output wire flushE,
+	output wire stallE,
+	input wire divstart,
 	// memory visit stage
 	input wire [4:0] writeregM,
 	input wire regwriteM,
@@ -55,8 +57,8 @@ module hazard(
 	wire lwstallD;
 	wire branchstallD;
 
-	assign forwardaD = ((rsD != 0) && (rsD == writeregM) && regwriteM);
-	assign forwardbD = ((rtD != 0) && (rtD == writeregM) && regwriteM);
+	assign forwardaD = (rsD && (rsD == writeregM) && regwriteM);
+	assign forwardbD = (rtD && (rtD == writeregM) && regwriteM);
 	assign forwardhiloE = (!hilowriteE && hilowriteM) ? 2'b01:
 						  (!hilowriteE && hilowriteW) ? 2'b10:
 						  2'b00;
@@ -65,14 +67,14 @@ module hazard(
 	begin
 		forwardaE = 2'b00;
 		forwardbE = 2'b00;
-		if (rsE != 0)
+		if (rsE)
 		begin
 			if ((rsE == writeregM) && regwriteM)
 				forwardaE = 2'b10;
 			else if ((rsE == writeregW) && regwriteW)
 				forwardaE = 2'b01;
 		end
-		if (rtE != 0)
+		if (rtE)
 		begin
 			if ((rtE == writeregM) && regwriteM)
 				forwardbE = 2'b10;
@@ -89,8 +91,9 @@ module hazard(
 			memtoregM &&
 			((writeregM == rsD) || (writeregM == rtD)));
 
-	assign stallF = lwstallD || branchstallD;
-	assign stallD = lwstallD || branchstallD;
+	assign stallF = lwstallD || branchstallD || divstart;
+	assign stallD = lwstallD || branchstallD || divstart;
 	assign flushE = lwstallD || branchstallD;
+	assign stallE = divstart;
 
 endmodule

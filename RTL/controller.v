@@ -31,6 +31,7 @@ module controller(
 	
 	// execute stage
 	input wire flushE,
+	input wire stallE,
 	output wire memtoregE,
 	output wire [1:0] alusrcE,
 	output wire regdstE,regwriteE,	
@@ -70,9 +71,10 @@ module controller(
 
 	assign pcsrcD = branchD & equalD;
 
-	floprc #(11) regE(
+	flopenrc #(11) regE(
 		clk,
 		rst,
+		~stallE,
 		flushE,
 		{memtoregD,memwriteD,alusrcD,regdstD,regwriteD,alucontrolD},
 		{memtoregE,memwriteE,alusrcE,regdstE,regwriteE,alucontrolE}

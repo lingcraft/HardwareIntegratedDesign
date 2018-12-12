@@ -31,7 +31,7 @@ module alu(
 	output reg [31:0] hialuout,loaluout,
 	output reg overflow
     );
-
+	
 	always @ (*)
 	begin
 		case (alucontrol)
@@ -57,9 +57,9 @@ module alu(
 			`MTLO_CONTROL:	loaluout <= a;
 
 			// 算术运算
-			`ADD_CONTROL:	y <= a + b;
+			`ADD_CONTROL:	y <= (overflow) ? 32'b0 : (a + b);
 			`ADDU_CONTROL:	y <= a + b;
-			`SUB_CONTROL:	y <= a - b;
+			`SUB_CONTROL:	y <= (overflow) ? 32'b0 : (a - b);
 			`SUBU_CONTROL:	y <= a - b;
 			`SLT_CONTROL:	y <= ($signed(a) < $signed(b));
 			`SLTU_CONTROL:	y <= (a < b);
@@ -73,8 +73,18 @@ module alu(
 	always @ (*)
 	begin
 		case (alucontrol)
-			`ADD_CONTROL:  overflow <= a[31] & b[31] & ~y[31] | ~a[31] & ~b[31] & y[31];
-			`SUB_CONTROL:  overflow <= ((a[31] && !b[31]) && !y[31]) || ((!a[31] && b[31]) && y[31]);
+			`ADD_CONTROL:  
+			begin
+				overflow <= a[31] & b[31] & ~y[31] | ~a[31] & ~b[31] & y[31];
+				if (overflow)
+					y <= 32'b0;
+			end
+			`SUB_CONTROL:  
+			begin
+				overflow <= a[31] & b[31] & ~y[31] | ~a[31] & ~b[31] & y[31];
+				if (overflow)
+					y <= 32'b0;
+			end
 			`ADDU_CONTROL: overflow <= 0;
 			`SUBU_CONTROL: overflow <= 0;
 			default: overflow <= 0;

@@ -42,6 +42,7 @@ module datapath(
 	input wire regwriteE,
 	input wire [4:0] alucontrolE,
 	output wire flushE,
+	output wire stallE,
 
 	// memory visit stage
 	input wire memtoregM,
@@ -86,6 +87,11 @@ module datapath(
 	wire [31:0] hiout2E,loout2E;
 	wire [31:0] hialuoutE,loaluoutE;
 	wire overflow;
+	wire [31:0] hidivoutE,lodivoutE;
+	wire [31:0] hialuout2E,loaluout2E;
+	wire divsignalE;
+	wire divstartE;
+	wire divreadyE;
 
 	// memory visit stage
 	wire [4:0] writeregM;
@@ -117,6 +123,8 @@ module datapath(
 		hilowriteE,
 		forwardaE,forwardbE,forwardhiloE,
 		flushE,
+		stallE,
+		divstartE,
 		// memory visit stage
 		writeregM,
 		regwriteM,
@@ -138,9 +146,12 @@ module datapath(
 	regfile rf(clk,regwriteW,rsD,rtD,writeregW,resultW,srcaD,srcbD);
 	hiloreg hilo(clk,rst,hilowriteW,hialuoutW,loaluoutW,hioutD,looutD);
 
+
 	// fetch stage logic
 	flopenr #(32) pcreg(clk,rst,~stallF,pcnextFD,pcF);
 	adder pcadd1(pcF,32'b100,pcplus4F);
+
+
 	// decode stage
 	flopenr #(32) r1D(clk,rst,~stallD,pcplus4F,pcplus4D);
 	flopenrc #(32) r2D(clk,rst,~stallD,flushD,instrF,instrD);
@@ -159,31 +170,34 @@ module datapath(
 	assign rdD = instrD[15:11];
 	assign saD = instrD[10:6]; 
 
-	// execute stage
-	floprc #(32) r1E(clk,rst,flushE,srcaD,srcaE);
-	floprc #(32) r2E(clk,rst,flushE,srcbD,srcbE);
-	floprc #(32) r3E(clk,rst,flushE,signimmD,signimmE);
-	floprc #(5) r4E(clk,rst,flushE,rsD,rsE);
-	floprc #(5) r5E(clk,rst,flushE,rtD,rtE);
-	floprc #(5) r6E(clk,rst,flushE,rdD,rdE);
-	floprc #(32) r7E(clk,rst,flushE,zeroimmD,zeroimmE);
-	floprc #(5) r8E(clk,rst,flushE,saD,saE);
 
-	floprc #(2) r9E(clk,rst,flushE,hilowriteD,hilowriteE);
-	floprc #(64) r10E(clk,rst,flushE,{hioutD,looutD},{hioutE,looutE});
+	// execute stage
+	flopenrc #(32) r1E(clk,rst,~stallE,flushE,srcaD,srcaE);
+	flopenrc #(32) r2E(clk,rst,~stallE,flushE,srcbD,srcbE);
+	flopenrc #(32) r3E(clk,rst,~stallE,flushE,signimmD,signimmE);
+	flopenrc #(5) r4E(clk,rst,~stallE,flushE,rsD,rsE);
+	flopenrc #(5) r5E(clk,rst,~stallE,flushE,rtD,rtE);
+	flopenrc #(5) r6E(clk,rst,~stallE,flushE,rdD,rdE);
+	flopenrc #(32) r7E(clk,rst,~stallE,flushE,zeroimmD,zeroimmE);
+	flopenrc #(5) r8E(clk,rst,~stallE,flushE,saD,saE);
+
+	flopenrc #(2) r9E(clk,rst,~stallE,flushE,hilowriteD,hilowriteE);
+	flopenrc #(64) r10E(clk,rst,~stallE,flushE,{hioutD,looutD},{hioutE,looutE});
 
 	mux3 #(32) forwardaemux(srcaE,resultW,aluoutM,forwardaE,srca2E);
 	mux3 #(32) forwardbemux(srcbE,resultW,aluoutM,forwardbE,srcb2E);
-
 	mux3 #(32) forwardhimux(hioutE,hialuoutM,hialuoutW,forwardhiloE,hiout2E);
 	mux3 #(32) forwardlomux(looutE,loaluoutM,loaluoutW,forwardhiloE,loout2E);
-
 	// mux2 #(32) srcbmux(srcb2E,signimmE,alusrcE,srcb3E);
 	mux3 #(32) srcbmux(srcb2E,signimmE,zeroimmE,alusrcE,srcb3E);
-
 	alu alu(srca2E,srcb3E,saE,alucontrolE,hiout2E,loout2E,aluoutE,hialuoutE,loaluoutE,overflow);
-
 	mux2 #(5) wrmux(rtE,rdE,regdstE,writeregE);
+
+	divjudger divjudge(divreadyE,alucontrolE,divstartE,divsignalE,signeddivsignalE);
+	divider division(clk,rst,signeddivsignalE,srca2E,srcb3E,divstartE,1'b0,{hidivoutE,lodivoutE},divreadyE);
+	mux2 #(32) hidiv(hialuoutE,hidivoutE,divsignalE,hialuout2E);
+	mux2 #(32) lodiv(loaluoutE,lodivoutE,divsignalE,loaluout2E);
+
 
 	// memory visit stage
 	flopr #(32) r1M(clk,rst,srcb2E,writedataM);
@@ -191,7 +205,9 @@ module datapath(
 	flopr #(5) r3M(clk,rst,writeregE,writeregM);
 
 	flopr #(2)	r4M(clk,rst,hilowriteE,hilowriteM);
-	flopr #(64) r5M(clk,rst,{hialuoutE,loaluoutE},{hialuoutM,loaluoutM});
+	// flopr #(64) r5M(clk,rst,{hialuoutE,loaluoutE},{hialuoutM,loaluoutM});
+	flopr #(64) r5M(clk,rst,{hialuout2E,loaluout2E},{hialuoutM,loaluoutM});
+
 
 	// write back stage
 	flopr #(32) r1W(clk,rst,aluoutM,aluoutW);
@@ -202,4 +218,5 @@ module datapath(
 	flopr #(64) r5W(clk,rst,{hialuoutM,loaluoutM},{hialuoutW,loaluoutW});
 
 	mux2 #(32) resmux(aluoutW,readdataW,memtoregW,resultW);
+	
 endmodule

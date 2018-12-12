@@ -57,9 +57,9 @@ module alu(
 			`MTLO_CONTROL:	loaluout <= a;
 
 			// 算术运算
-			`ADD_CONTROL:	y <= (overflow) ? 32'b0 : (a + b);
+			`ADD_CONTROL:	y <= a + b;
 			`ADDU_CONTROL:	y <= a + b;
-			`SUB_CONTROL:	y <= (overflow) ? 32'b0 : (a - b);
+			`SUB_CONTROL:	y <= a - b;
 			`SUBU_CONTROL:	y <= a - b;
 			`SLT_CONTROL:	y <= ($signed(a) < $signed(b));
 			`SLTU_CONTROL:	y <= (a < b);

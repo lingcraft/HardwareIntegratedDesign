@@ -29,11 +29,12 @@ module mips(
 	input wire [31:0] readdataM 
     );
 	
-	wire [5:0] opD,functD;
+	wire [5:0] opD,functD,rtD;
 
 	wire regdstE;
 	wire [1:0] alusrcE;
 	wire pcsrcD,memtoregE,memtoregM,memtoregW,regwriteE,regwriteM,regwriteW;
+	wire balD;
 	wire [1:0] hilowriteD;
 
 	wire [4:0] alucontrolE;
@@ -43,8 +44,9 @@ module mips(
 	controller c(
 		clk,rst,
 		// decode stage
-		opD,functD,
+		opD,functD,rtD,
 		pcsrcD,branchD,equalD,jumpD,
+		balD,
 		hilowriteD,
 		// execute stage
 		flushE,
@@ -66,8 +68,9 @@ module mips(
 		// decode stage
 		pcsrcD,branchD,
 		jumpD,
+		balD,
 		equalD,
-		opD,functD,
+		opD,functD,rtD,
 		hilowriteD,
 		// execute stage
 		memtoregE,

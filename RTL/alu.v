@@ -63,8 +63,8 @@ module alu(
 			`SUBU_CONTROL:	y <= a - b;
 			`SLT_CONTROL:	y <= ($signed(a) < $signed(b));
 			`SLTU_CONTROL:	y <= (a < b);
-			`MULT_CONTROL:	{hialuout,loaluout} = $signed(a) * $signed(b);
-			`MULTU_CONTROL:	{hialuout,loaluout} = a * b;
+			`MULT_CONTROL:	{hialuout,loaluout} <= $signed(a) * $signed(b);
+			`MULTU_CONTROL:	{hialuout,loaluout} <= a * b;
 			
 			default: y <= 32'b0;
 		endcase

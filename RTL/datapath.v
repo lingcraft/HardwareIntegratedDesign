@@ -83,6 +83,7 @@ module datapath(
 	wire [31:0] aluoutE;
 	// hilo reg
 	wire [1:0] hilowriteE;
+	wire [1:0] hilowrite2E;
 	wire [31:0] hioutE,looutE;
 	wire [31:0] hiout2E,loout2E;
 	wire [31:0] hialuoutE,loaluoutE;
@@ -180,7 +181,6 @@ module datapath(
 	flopenrc #(5) r6E(clk,rst,~stallE,flushE,rdD,rdE);
 	flopenrc #(32) r7E(clk,rst,~stallE,flushE,zeroimmD,zeroimmE);
 	flopenrc #(5) r8E(clk,rst,~stallE,flushE,saD,saE);
-
 	flopenrc #(2) r9E(clk,rst,~stallE,flushE,hilowriteD,hilowriteE);
 	flopenrc #(64) r10E(clk,rst,~stallE,flushE,{hioutD,looutD},{hioutE,looutE});
 
@@ -188,12 +188,12 @@ module datapath(
 	mux3 #(32) forwardbemux(srcbE,resultW,aluoutM,forwardbE,srcb2E);
 	mux3 #(32) forwardhimux(hioutE,hialuoutM,hialuoutW,forwardhiloE,hiout2E);
 	mux3 #(32) forwardlomux(looutE,loaluoutM,loaluoutW,forwardhiloE,loout2E);
-	// mux2 #(32) srcbmux(srcb2E,signimmE,alusrcE,srcb3E);
 	mux3 #(32) srcbmux(srcb2E,signimmE,zeroimmE,alusrcE,srcb3E);
+
 	alu alu(srca2E,srcb3E,saE,alucontrolE,hiout2E,loout2E,aluoutE,hialuoutE,loaluoutE,overflow);
 	mux2 #(5) wrmux(rtE,rdE,regdstE,writeregE);
 
-	divjudger divjudge(divreadyE,alucontrolE,divstartE,divsignalE,signeddivsignalE);
+	divjudger divjudge(divreadyE,alucontrolE,hilowriteE,divstartE,divsignalE,signeddivsignalE,hilowrite2E);
 	divider division(clk,rst,signeddivsignalE,srca2E,srcb3E,divstartE,1'b0,{hidivoutE,lodivoutE},divreadyE);
 	mux2 #(32) hidiv(hialuoutE,hidivoutE,divsignalE,hialuout2E);
 	mux2 #(32) lodiv(loaluoutE,lodivoutE,divsignalE,loaluout2E);
@@ -203,9 +203,7 @@ module datapath(
 	flopr #(32) r1M(clk,rst,srcb2E,writedataM);
 	flopr #(32) r2M(clk,rst,aluoutE,aluoutM);
 	flopr #(5) r3M(clk,rst,writeregE,writeregM);
-
-	flopr #(2)	r4M(clk,rst,hilowriteE,hilowriteM);
-	// flopr #(64) r5M(clk,rst,{hialuoutE,loaluoutE},{hialuoutM,loaluoutM});
+	flopr #(2)	r4M(clk,rst,hilowrite2E,hilowriteM);
 	flopr #(64) r5M(clk,rst,{hialuout2E,loaluout2E},{hialuoutM,loaluoutM});
 
 
@@ -213,7 +211,6 @@ module datapath(
 	flopr #(32) r1W(clk,rst,aluoutM,aluoutW);
 	flopr #(32) r2W(clk,rst,readdataM,readdataW);
 	flopr #(5) r3W(clk,rst,writeregM,writeregW);
-
 	flopr #(2) r4W(clk,rst,hilowriteM,hilowriteW);
 	flopr #(64) r5W(clk,rst,{hialuoutM,loaluoutM},{hialuoutW,loaluoutW});
 

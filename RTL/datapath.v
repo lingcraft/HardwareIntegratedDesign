@@ -21,129 +21,159 @@
 
 
 module datapath(
-	input wire clk,rst,
-
+	input  wire clk,
+	input  wire rst,
 	// fetch stage
 	output wire [31:0] pcF,
-	input wire [31:0] instrF,
-
+	input  wire [31:0] instrF,
 	// decode stage
-	input wire pcsrcD,branchD,
+	input  wire pcsrcD,
+	input  wire branchD,
 	output wire equalD,
-	input wire balD,
-	input wire jumpD,jalD,jrD,jalrD,
-	output wire [5:0] opD,functD,rtD,
-	// hilo reg
-	input wire [1:0] hilowriteD,
-
+	input  wire balD,
+	input  wire jumpD,
+	input  wire jalD,
+	input  wire jrD,
+	input  wire jalrD,
+	output wire [5:0] opD,
+	output wire [5:0] functD,
+	output wire [5:0] rtD,
+	input  wire [1:0] hilowriteD,
 	// execute stage
-	input wire memtoregE,
-	input wire [1:0] alusrcE,
-	input wire regdstE,
-	input wire regwriteE,
-	input wire [4:0] alucontrolE,
+	input  wire memtoregE,
+	input  wire [1:0] alusrcE,
+	input  wire regdstE,
+	input  wire regwriteE,
+	input  wire [4:0] alucontrolE,
 	output wire flushE,
 	output wire stallE,
-
 	// memory visit stage
-	input wire memtoregM,
-	input wire regwriteM,
-	output wire [31:0] aluoutM,writedataM,
-	input wire [31:0] readdataM,
-
+	input  wire memtoregM,
+	input  wire regwriteM,
+	output wire [31:0] aluoutM,
+	output wire [31:0] writedataM,
+	input  wire [31:0] readdataM,
 	// write back stage
-	input wire memtoregW,
-	input wire regwriteW
+	input  wire memtoregW,
+	input  wire regwriteW
     );
 	
 	// fetch stage
 	wire stallF;
-
 	// FD
-	wire [31:0] pcnextFD,pcnextbrFD,pcnextjrFD,pcplus4F,pcplus8F;
+	wire [31:0] pcnextFD;
+	wire [31:0] pcnextbrFD;
+	wire [31:0] pcnextjrFD;
+	wire [31:0] pcplus4F;
+	wire [31:0] pcplus8F;
 	wire [31:0] pcbranchD;
-
 	// decode stage
-	wire [31:0] pcplus4D,instrD;
+	wire [31:0] pcplus4D;
+	wire [31:0] instrD;
 	wire [31:0] pcplus8D;
-	wire forwardaD,forwardbD;
-	wire [4:0] rsD,rdD,saD;
-	wire flushD,stallD;
-	wire [31:0] signimmD,signimmshD;
+	wire forwardaD;
+	wire forwardbD;
+	wire [4:0] rsD;
+	wire [4:0] rdD;
+	wire [4:0] saD;
+	wire flushD;
+	wire stallD;
+	wire [31:0] signimmD;
+	wire [31:0] signimmshD;
 	wire [31:0] zeroimmD;
-	wire [31:0] srcaD,srca2D,srcbD,srcb2D;
-	// hilo reg  
-	wire [31:0] hioutD,looutD;
-
+	wire [31:0] srcaD;
+	wire [31:0] srca2D;
+	wire [31:0] srcbD;
+	wire [31:0] srcb2D;
+	wire [31:0] hioutD;
+	wire [31:0] looutD;
 	// execute stage
-	wire [1:0] forwardaE,forwardbE;
+	wire [1:0] forwardaE;
+	wire [1:0] forwardbE;
 	wire [1:0] forwardhiloE;
-	wire [4:0] rsE,rtE,rdE,saE;
-	wire [4:0] writeregE,writereg2E;
+	wire [4:0] rsE;
+	wire [4:0] rtE;
+	wire [4:0] rdE;
+	wire [4:0] saE;
+	wire [4:0] writeregE;
+	wire [4:0] writereg2E;
 	wire [31:0] signimmE;
 	wire [31:0] zeroimmE;
-	wire [31:0] srcaE,srca2E,srcbE,srcb2E,srcb3E;
+	wire [31:0] srcaE;
+	wire [31:0] srca2E;
+	wire [31:0] srcbE;
+	wire [31:0] srcb2E;
+	wire [31:0] srcb3E;
 	wire [31:0] aluoutE;
 	wire [31:0] aluout2E;
-	// hilo reg
 	wire [1:0] hilowriteE;
 	wire [1:0] hilowrite2E;
-	wire [31:0] hioutE,looutE;
-	wire [31:0] hiout2E,loout2E;
-	wire [31:0] hialuoutE,loaluoutE;
+	wire [31:0] hioutE;
+	wire [31:0] looutE;
+	wire [31:0] hiout2E;
+	wire [31:0] loout2E;
+	wire [31:0] hialuoutE;
+	wire [31:0] loaluoutE;
 	wire overflow;
-	wire [31:0] hidivoutE,lodivoutE;
-	wire [31:0] hialuout2E,loaluout2E;
+	wire [31:0] hidivoutE;
+	wire [31:0] lodivoutE;
+	wire [31:0] hialuout2E;
+	wire [31:0] loaluout2E;
 	wire divsignalE;
 	wire divstartE;
 	wire divreadyE;
 	wire [31:0] pcplus8E;
-	// branch jump
-	wire balE;
-	wire jalE,jalrE;
-
+	wire balE;		
+	wire jalE;
+	wire jalrE;
 	// memory visit stage
 	wire [4:0] writeregM;
-	// hilo reg
 	wire [1:0] hilowriteM;
-	wire [31:0] hialuoutM,loaluoutM;
-
+	wire [31:0] hialuoutM;
+	wire [31:0] loaluoutM;
 	// write back stage
 	wire [4:0] writeregW;
-	wire [31:0] aluoutW,readdataW,resultW;
-	// hilo reg
+	wire [31:0] aluoutW;
+	wire [31:0] readdataW;
+	wire [31:0] resultW;
 	wire [1:0] hilowriteW;
-	wire [31:0] hialuoutW,loaluoutW;
+	wire [31:0] hialuoutW;
+	wire [31:0] loaluoutW;
 
 	// hazard detection
 	hazard h(
 		// fetch stage
-		stallF,
+		.stallF 		(stallF			),
 		// decode stage
-		rsD,rtD,
-		branchD,
-		forwardaD,forwardbD,
-		stallD,
+		.rsD 			(rsD 			),
+		.rtD 			(rtD 			),
+		.branchD		(branchD		),
+		.forwardaD		(forwardaD		),
+		.forwardbD		(forwardbD		),
+		.stallD			(stallD			),
 		// execute stage
-		rsE,rtE,
-		writereg2E,
-		regwriteE,
-		memtoregE,
-		hilowriteE,
-		forwardaE,forwardbE,forwardhiloE,
-		flushE,
-		stallE,
-		divstartE,
+		.rsE 			(rsE 			),
+		.rtE 			(rtE 			),
+		.writeregE 		(writereg2E		),
+		.regwriteE	 	(regwriteE		),
+		.memtoregE	 	(memtoregE		),
+		.hilowriteE 	(hilowriteE		),
+		.forwardaE 		(forwardaE 		),
+		.forwardbE 		(forwardbE 		),
+		.forwardhiloE	(forwardhiloE	),
+		.flushE			(flushE			),
+		.stallE			(stallE			),
+		.divstart		(divstartE		),
 		// memory visit stage
-		writeregM,
-		regwriteM,
-		memtoregM,
-		hilowriteM,
+		.writeregM		(writeregM		),
+		.regwriteM		(regwriteM		),
+		.memtoregM		(memtoregM		),
+		.hilowriteM		(hilowriteM		),
 		// write back stage
-		writeregW,
-		regwriteW,
-		hilowriteW
-		);
+		.writeregW		(writeregW		),
+		.regwriteW		(regwriteW		),
+		.hilowriteW		(hilowriteW		)
+	);
 
 	// next PC logic (operates in fetch an decode)
 	mux2 #(32) pcbrmux(pcplus4F,pcbranchD,pcsrcD,pcnextbrFD);

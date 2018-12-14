@@ -21,73 +21,112 @@
 
 
 module mips(
-	input wire clk,rst,
+	input  wire clk,
+	input  wire rst,
 	output wire [31:0] pcF,
-	input wire [31:0] instrF,
+	input  wire [31:0] instrF,
 	output wire memwriteM,
-	output wire [31:0] aluoutM,writedataM,
-	input wire [31:0] readdataM 
-    );
+	output wire [31:0] aluoutM,
+	output wire [31:0] writedataM,
+	input  wire [31:0] readdataM 
+	);
 	
-	wire [5:0] opD,functD,rtD;
+	wire [5:0] opD;
+	wire [5:0] functD;
+	wire [5:0] rtD;
+	wire pcsrcD;
+	wire branchD;
+	wire equalD;
+	wire balD;
+	wire jumpD;
+	wire jalD;
+	wire jrD;
+	wire jalrD;
+	wire [1:0] hilowriteD;
 
 	wire regdstE;
 	wire [1:0] alusrcE;
-	wire pcsrcD,memtoregE,memtoregM,memtoregW,regwriteE,regwriteM,regwriteW;
-	wire balD;
-	wire jumpD,jalD,jrD,jalrD;
-	wire [1:0] hilowriteD;
-
+	wire memtoregE;
+	wire regwriteE;
 	wire [4:0] alucontrolE;
-	wire flushE,equalD;
+	wire flushE;
 	wire stallE;
 
+	wire memtoregM;
+	wire regwriteM;
+
+	wire memtoregW;
+	wire regwriteW;
+	
 	controller c(
-		clk,rst,
+		.clk		(clk		),
+		.rst 		(rst		),
 		// decode stage
-		opD,functD,rtD,
-		pcsrcD,branchD,equalD,
-		balD,
-		jumpD,jalD,jrD,jalrD,
-		hilowriteD,
+		.opD 		(opD		),
+		.functD		(functD		),
+		.rtD		(rtD		),
+		.pcsrcD		(pcsrcD		),
+		.branchD	(branchD	),
+		.equalD		(equalD		),
+		.balD		(balD		),
+		.jumpD		(jumpD		),
+		.jalD		(jalD		),
+		.jrD		(jrD		),
+		.jalrD		(jalrD		),
+		.hilowriteD	(hilowriteD	),
 		// execute stage
-		flushE,
-		stallE,
-		memtoregE,alusrcE,
-		regdstE,regwriteE,	
-		alucontrolE,
+		.flushE		(flushE		),
+		.stallE		(stallE		),
+		.memtoregE	(memtoregE	),
+		.alusrcE	(alusrcE	),
+		.regdstE	(regdstE	),
+		.regwriteE	(regwriteE	),	
+		.alucontrolE(alucontrolE),
 		// memory visit stage
-		memtoregM,memwriteM,
-		regwriteM,
+		.memtoregM	(memtoregM	),
+		.memwriteM	(memwriteM	),
+		.regwriteM	(regwriteM	),
 		// write back stage
-		memtoregW,regwriteW
-		);
+		.memtoregW	(memtoregW	),
+		.regwriteW	(regwriteW	)
+	);
+
 	datapath dp(
-		clk,rst,
+		.clk		(clk		),
+		.rst 		(rst 		),
 		// fetch stage
-		pcF,
-		instrF,
+		.pcF		(pcF		),
+		.instrF		(instrF		),
 		// decode stage
-		pcsrcD,branchD,equalD,
-		balD,
-		jumpD,jalD,jrD,jalrD,
-		opD,functD,rtD,
-		hilowriteD,
+		.pcsrcD		(pcsrcD		),
+		.branchD	(branchD	),
+		.equalD		(equalD		),
+		.balD		(balD		),
+		.jumpD		(jumpD		),
+		.jalD 		(jalD 		),
+		.jrD 		(jrD 		),
+		.jalrD 		(jalrD		),
+		.opD		(opD		),
+		.functD		(functD		),
+		.rtD		(rtD		),
+		.hilowriteD	(hilowriteD	),
 		// execute stage
-		memtoregE,
-		alusrcE,regdstE,
-		regwriteE,
-		alucontrolE,
-		flushE,
-		stallE,
+		.memtoregE	(memtoregE	),
+		.alusrcE 	(alusrcE	),
+		.regdstE 	(regdstE	),
+		.regwriteE 	(regwriteE	),
+		.alucontrolE(alucontrolE),
+		.flushE		(flushE		),
+		.stallE		(stallE		),
 		// memory visit stage
-		memtoregM,
-		regwriteM,
-		aluoutM,writedataM,
-		readdataM,
+		.memtoregM	(memtoregM	),
+		.regwriteM	(regwriteM	),
+		.aluoutM	(aluoutM	),
+		.writedataM	(writedataM	),
+		.readdataM	(readdataM	),
 		// write back stage
-		memtoregW,
-		regwriteW
-	    );
+		.memtoregW	(memtoregW	),
+		.regwriteW	(regwriteW	)
+	);
 	
 endmodule

@@ -21,56 +21,73 @@
 
 
 module controller(
-	input wire clk,rst,
+	input  wire clk,
+	input  wire rst,
 	// decode stage
-	input wire [5:0] opD,functD,rtD,
-	output wire pcsrcD,branchD,
-	input wire equalD,
+	input  wire [5:0] opD,
+	input  wire [5:0] functD,
+	input  wire [5:0] rtD,
+	output wire pcsrcD,
+	output wire branchD,
+	input  wire equalD,
 	output wire balD,
-	output wire jumpD,jalD,jrD,jalrD,
+	output wire jumpD,
+	output wire jalD,
+	output wire jrD,
+	output wire jalrD,
 	output wire [1:0] hilowriteD,
-	
 	// execute stage
-	input wire flushE,
-	input wire stallE,
+	input  wire flushE,
+	input  wire stallE,
 	output wire memtoregE,
 	output wire [1:0] alusrcE,
-	output wire regdstE,regwriteE,	
+	output wire regdstE,
+	output wire regwriteE,	
 	output wire [4:0] alucontrolE,
-
 	// memory visit stage
-	output wire memtoregM,memwriteM,
-				regwriteM,
+	output wire memtoregM,
+	output wire memwriteM,
+	output wire	regwriteM,
 	// write back stage
-	output wire memtoregW,regwriteW
-
+	output wire memtoregW,
+	output wire regwriteW
     );
 	
 	// decode stage
 	wire [3:0] aluopD;
-	wire memtoregD,memwriteD;
+	wire memtoregD;
+	wire memwriteD;
 	wire [1:0] alusrcD;
-	wire regdstD,regwriteD;
-
+	wire regdstD;
+	wire regwriteD;
 	wire [4:0] alucontrolD;
-
 	// execute stage
 	wire memwriteE;
 
 	maindec md(
-		opD,functD,rtD,
-		memtoregD,memwriteD,
-		branchD,alusrcD,
-		regdstD,regwriteD,
-		balD,
-		jumpD,
-		jalD,
-		jrD,
-		jalrD,
-		aluopD,
-		hilowriteD
-		);
-	aludec ad(functD,aluopD,alucontrolD);
+		.op 		(opD		),
+		.funct 		(functD		),
+		.rt 		(rtD 		),
+		.memtoreg 	(memtoregD	),
+		.memwrite 	(memwriteD	),
+		.branch 	(branchD	),
+		.alusrc 	(alusrcD	),
+		.regdst 	(regdstD	),
+		.regwrite 	(regwriteD	),
+		.bal 		(balD		),
+		.jump 		(jumpD		),
+		.jal 		(jalD 		),
+		.jr 		(jrD 		),
+		.jalr 		(jalrD 		),
+		.aluop 		(aluopD		),
+		.hilowrite 	(hilowriteD	)
+	);
+
+	aludec ad(
+		.funct 		(functD		),
+		.aluop 		(aluopD		),
+		.alucontrol (alucontrolD)
+	);
 
 	assign pcsrcD = branchD & equalD;
 
@@ -81,17 +98,18 @@ module controller(
 		flushE,
 		{memtoregD,memwriteD,alusrcD,regdstD,regwriteD,alucontrolD},
 		{memtoregE,memwriteE,alusrcE,regdstE,regwriteE,alucontrolE}
-		);
+	);
 	
 	flopr #(3) regM(
 		clk,rst,
 		{memtoregE,memwriteE,regwriteE},
 		{memtoregM,memwriteM,regwriteM}
-		);
+	);
+
 	flopr #(2) regW(
 		clk,rst,
 		{memtoregM,regwriteM},
 		{memtoregW,regwriteW}
-		);
+	);
 
 endmodule

@@ -22,14 +22,14 @@
 `include "defines.vh"
 
 module alu(
-	input wire [31:0] a,
-	input wire [31:0] b,
-	input wire [4:0] sa,
-	input wire [4:0] alucontrol,
-	input wire [31:0] hialuin,loaluin,
-	output reg [31:0] y,
-	output reg [31:0] hialuout,loaluout,
-	output reg overflow
+	input  wire [31:0] a,
+	input  wire [31:0] b,
+	input  wire [4:0] sa,
+	input  wire [4:0] alucontrol,
+	input  wire [31:0] hialuin,loaluin,
+	output reg  [31:0] y,
+	output reg  [31:0] hialuout,loaluout,
+	output reg  overflow
     );
 	
 	always @ (*)

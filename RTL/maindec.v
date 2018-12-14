@@ -22,9 +22,9 @@
 `include "defines.vh"
 
 module maindec(
-	input wire [5:0] op,
-	input wire [5:0] funct,
-	input wire [5:0] rt,
+	input  wire [5:0] op,
+	input  wire [5:0] funct,
+	input  wire [5:0] rt,
 	output wire memtoreg,
 	output wire memwrite,
 	output wire branch,
@@ -32,7 +32,10 @@ module maindec(
 	output wire regdst,
 	output wire regwrite,
 	output wire bal,
-	output wire jump,jal,jr,jalr,
+	output wire jump,
+	output wire jal,
+	output wire jr,
+	output wire jalr,
 	output wire [3:0] aluop,
 	output wire [1:0] hilowrite
     );

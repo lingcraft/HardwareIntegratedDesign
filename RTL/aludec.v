@@ -22,9 +22,9 @@
 `include "defines.vh"
 
 module aludec(
-	input wire [5:0] funct,
-	input wire [3:0] aluop,
-	output reg [4:0] alucontrol
+	input  wire [5:0] funct,
+	input  wire [3:0] aluop,
+	output reg  [4:0] alucontrol
     );
 	
 	always @ (*)

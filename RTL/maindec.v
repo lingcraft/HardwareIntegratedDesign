@@ -31,15 +31,15 @@ module maindec(
 	output wire [1:0] alusrc,
 	output wire regdst,
 	output wire regwrite,
-	output wire jump,
 	output wire bal,
+	output wire jump,jal,jr,jalr,
 	output wire [3:0] aluop,
 	output wire [1:0] hilowrite
     );
 
-	reg [14:0] controls;
+	reg [17:0] controls;
 
-	assign {regwrite,regdst,alusrc,branch,memwrite,memtoreg,jump,bal,hilowrite,aluop} = controls;
+	assign {aluop,alusrc,hilowrite,regwrite,regdst,memwrite,memtoreg,branch,bal,jump,jal,jr,jalr} = controls;
 
 	always @ (*)
 	begin
@@ -48,54 +48,62 @@ module maindec(
 			begin
 				case (funct)
 					// 数据移动
-					`MFHI:	controls <= {11'b1_1_00_0_0_0_0_0_00, `R_TYPE_OP};
-					`MFLO:	controls <= {11'b1_1_00_0_0_0_0_0_00, `R_TYPE_OP};
-					`MTHI:	controls <= {11'b0_0_00_0_0_0_0_0_10, `R_TYPE_OP};
-					`MTLO:	controls <= {11'b0_0_00_0_0_0_0_0_01, `R_TYPE_OP};
+					`MFHI:	controls <= {`R_TYPE_OP, 14'b00_00_1_1_0_0_0_0_0_0_0_0};
+					`MFLO:	controls <= {`R_TYPE_OP, 14'b00_00_1_1_0_0_0_0_0_0_0_0};
+					`MTHI:	controls <= {`R_TYPE_OP, 14'b00_10_0_0_0_0_0_0_0_0_0_0};
+					`MTLO:	controls <= {`R_TYPE_OP, 14'b00_01_0_0_0_0_0_0_0_0_0_0};
 
 					// 乘除法
-					`MULT:	controls <= {11'b0_0_00_0_0_0_0_0_11, `R_TYPE_OP};
-					`MULTU:	controls <= {11'b0_0_00_0_0_0_0_0_11, `R_TYPE_OP};
-					`DIV:	controls <= {11'b0_0_00_0_0_0_0_0_11, `R_TYPE_OP};
-					`DIVU:	controls <= {11'b0_0_00_0_0_0_0_0_11, `R_TYPE_OP};
+					`MULT:	controls <= {`R_TYPE_OP, 14'b00_11_0_0_0_0_0_0_0_0_0_0};
+					`MULTU:	controls <= {`R_TYPE_OP, 14'b00_11_0_0_0_0_0_0_0_0_0_0};
+					`DIV:	controls <= {`R_TYPE_OP, 14'b00_11_0_0_0_0_0_0_0_0_0_0};
+					`DIVU:	controls <= {`R_TYPE_OP, 14'b00_11_0_0_0_0_0_0_0_0_0_0};
+
+					// 跳转
+					`JR:	controls <= {`USELESS_OP, 14'b00_00_0_0_0_0_0_0_0_0_1_0};
+					`JALR:	controls <= {`USELESS_OP, 14'b00_00_1_1_0_0_0_0_0_0_0_1};
 					
 					// 逻辑运算、移位、算术运算(乘除法除外)
-					default: controls <= {11'b1_1_00_0_0_0_0_0_00, `R_TYPE_OP};
+					default:controls <= {`R_TYPE_OP, 14'b00_00_1_1_0_0_0_0_0_0_0_0};
 				endcase
 			end
 
 			// 逻辑运算(I型)
-			`ANDI:  controls <= {11'b1_0_10_0_0_0_0_0_00, `ANDI_OP};
-			`XORI:	controls <= {11'b1_0_10_0_0_0_0_0_00, `XORI_OP};
-			`LUI:	controls <= {11'b1_0_10_0_0_0_0_0_00, `LUI_OP};
-			`ORI:	controls <= {11'b1_0_10_0_0_0_0_0_00, `ORI_OP};
+			`ANDI:  controls <= {`ANDI_OP,	14'b10_00_1_0_0_0_0_0_0_0_0_0};
+			`XORI:	controls <= {`XORI_OP,	14'b10_00_1_0_0_0_0_0_0_0_0_0};
+			`LUI:	controls <= {`LUI_OP,	14'b10_00_1_0_0_0_0_0_0_0_0_0};
+			`ORI:	controls <= {`ORI_OP,	14'b10_00_1_0_0_0_0_0_0_0_0_0};
 
 			// 算术运算(I型)
-			`ADDI:	controls <= {11'b1_0_01_0_0_0_0_0_00, `ADDI_OP};
-			`ADDIU:	controls <= {11'b1_0_01_0_0_0_0_0_00, `ADDIU_OP};
-			`SLTI:	controls <= {11'b1_0_01_0_0_0_0_0_00, `SLTI_OP};
-			`SLTIU: controls <= {11'b1_0_01_0_0_0_0_0_00, `SLTIU_OP};
+			`ADDI:	controls <= {`ADDI_OP, 	14'b01_00_1_0_0_0_0_0_0_0_0_0};
+			`ADDIU:	controls <= {`ADDIU_OP,	14'b01_00_1_0_0_0_0_0_0_0_0_0};
+			`SLTI:	controls <= {`SLTI_OP, 	14'b01_00_1_0_0_0_0_0_0_0_0_0};
+			`SLTIU: controls <= {`SLTIU_OP,	14'b01_00_1_0_0_0_0_0_0_0_0_0};
 
 			// 分支跳转
-			`BEQ: 	controls <= {11'b0_0_00_1_0_0_0_0_00, `USELESS_OP};
-			`BNE:	controls <= {11'b0_0_00_1_0_0_0_0_00, `USELESS_OP};
-			`BLEZ:	controls <= {11'b0_0_00_1_0_0_0_0_00, `USELESS_OP};
-			`BGTZ:	controls <= {11'b0_0_00_1_0_0_0_0_00, `USELESS_OP};
+			`BEQ: 	controls <= {`USELESS_OP, 14'b00_00_0_0_0_0_1_0_0_0_0_0};
+			`BNE:	controls <= {`USELESS_OP, 14'b00_00_0_0_0_0_1_0_0_0_0_0};
+			`BLEZ:	controls <= {`USELESS_OP, 14'b00_00_0_0_0_0_1_0_0_0_0_0};
+			`BGTZ:	controls <= {`USELESS_OP, 14'b00_00_0_0_0_0_1_0_0_0_0_0};
 			`REGIMM_INST:
 			begin
 				case (rt)
-					`BLTZ:	 controls <= {11'b0_0_00_1_0_0_0_0_00, `USELESS_OP};
-					`BLTZAL: controls <= {11'b1_0_00_1_0_0_0_1_00, `USELESS_OP};
-					`BGEZ:	 controls <= {11'b0_0_00_1_0_0_0_0_00, `USELESS_OP};
-					`BGEZAL: controls <= {11'b1_0_00_1_0_0_0_1_00, `USELESS_OP};
-					default: controls <= {11'b0, `USELESS_OP};
+					`BLTZ:	 controls <= {`USELESS_OP, 14'b00_00_0_0_0_0_1_0_0_0_0_0};
+					`BLTZAL: controls <= {`USELESS_OP, 14'b00_00_1_0_0_0_1_1_0_0_0_0};
+					`BGEZ:	 controls <= {`USELESS_OP, 14'b00_00_0_0_0_0_1_0_0_0_0_0};
+					`BGEZAL: controls <= {`USELESS_OP, 14'b00_00_1_0_0_0_1_1_0_0_0_0};
+
+					default: controls <= {`USELESS_OP, 14'b00_00_0_0_0_0_0_0_0_0_0_0};
 				endcase
 			end
+			`J:		controls <= {`USELESS_OP, 14'b00_00_0_0_0_0_0_0_1_0_0_0};
+			`JAL:	controls <= {`USELESS_OP, 14'b00_00_1_0_0_0_0_0_0_1_0_0};
 
-			`LW: 	controls <= {11'b1_0_01_0_0_1_0_0_00, `MEM_OP};
-			`SW: 	controls <= {11'b0_0_01_0_1_0_0_0_00, `MEM_OP};
+			// 访存
+			`LW: 	controls <= {`MEM_OP, 14'b01_00_1_0_0_1_0_0_0_0_0_0};
+			`SW: 	controls <= {`MEM_OP, 14'b01_00_0_0_1_0_0_0_0_0_0_0};
 			
-			default:controls <= 15'b0;
+			default:controls <= {`USELESS_OP, 14'b00_00_0_0_0_0_0_0_0_0_0_0};
 		endcase
 	end
 

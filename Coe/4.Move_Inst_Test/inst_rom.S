@@ -12,8 +12,8 @@ _start:
    mthi $3                # hi = 0x05050000
    mfhi $4                # $4 = 0x05050000
 
-   mtlo $3                # li = 0x05050000
-   mtlo $2                # li = 0xffff0000
-   mtlo $1                # li = 0x00000000
+   mtlo $3                # lo = 0x05050000
+   mtlo $2                # lo = 0xffff0000
+   mtlo $1                # lo = 0x00000000
    mflo $4                # $4 = 0x00000000        
 

@@ -26,8 +26,8 @@ module controller(
 	input wire [5:0] opD,functD,rtD,
 	output wire pcsrcD,branchD,
 	input wire equalD,
-	output wire jumpD,
 	output wire balD,
+	output wire jumpD,jalD,jrD,jalrD,
 	output wire [1:0] hilowriteD,
 	
 	// execute stage
@@ -62,8 +62,11 @@ module controller(
 		memtoregD,memwriteD,
 		branchD,alusrcD,
 		regdstD,regwriteD,
-		jumpD,
 		balD,
+		jumpD,
+		jalD,
+		jrD,
+		jalrD,
 		aluopD,
 		hilowriteD
 		);

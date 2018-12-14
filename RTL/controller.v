@@ -86,7 +86,7 @@ module controller(
 	aludec ad(
 		.funct 		(functD		),
 		.aluop 		(aluopD		),
-		.alucontrol (alucontrolD)
+		.alucontrol	(alucontrolD)
 	);
 
 	assign pcsrcD = branchD & equalD;

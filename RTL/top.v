@@ -44,7 +44,10 @@ module top(
 		.readdataM		(readdata		)
 	);
 
-	instdec instdec(instr,ascii);
+	instdec instdec(
+		.instr 			(instr 			),
+		.ascii			(ascii			)
+	);
 	
 	inst_mem imem(
 		.clka			(~clk			),

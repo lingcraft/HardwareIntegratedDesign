@@ -24,20 +24,20 @@
 module maindec(
 	input  wire [5:0] op,
 	input  wire [5:0] funct,
-	input  wire [5:0] rt,
-	output wire memtoreg,
-	output wire memwrite,
-	output wire branch,
+	input  wire [4:0] rt,
+	output wire [3:0] aluop,
 	output wire [1:0] alusrc,
-	output wire regdst,
+	output wire [1:0] hilowrite,
 	output wire regwrite,
+	output wire regdst,
+	output wire memwrite,
+	output wire memtoreg,
+	output wire branch,
 	output wire bal,
 	output wire jump,
 	output wire jal,
 	output wire jr,
-	output wire jalr,
-	output wire [3:0] aluop,
-	output wire [1:0] hilowrite
+	output wire jalr
     );
 
 	reg [17:0] controls;
@@ -103,7 +103,13 @@ module maindec(
 			`JAL:	controls <= {`USELESS_OP, 14'b00_00_1_0_0_0_0_0_0_1_0_0};
 
 			// 访存
-			`LW: 	controls <= {`MEM_OP, 14'b01_00_1_0_0_1_0_0_0_0_0_0};
+			`LB:	controls <= {`MEM_OP, 14'b01_00_1_0_1_1_0_0_0_0_0_0};
+			`LBU:	controls <= {`MEM_OP, 14'b01_00_1_0_1_1_0_0_0_0_0_0};
+			`LH:	controls <= {`MEM_OP, 14'b01_00_1_0_1_1_0_0_0_0_0_0};
+			`LHU:	controls <= {`MEM_OP, 14'b01_00_1_0_1_1_0_0_0_0_0_0};
+			`LW: 	controls <= {`MEM_OP, 14'b01_00_1_0_1_1_0_0_0_0_0_0};
+			`SB:	controls <= {`MEM_OP, 14'b01_00_0_0_1_0_0_0_0_0_0_0};
+			`SH:	controls <= {`MEM_OP, 14'b01_00_0_0_1_0_0_0_0_0_0_0};
 			`SW: 	controls <= {`MEM_OP, 14'b01_00_0_0_1_0_0_0_0_0_0_0};
 			
 			default:controls <= {`USELESS_OP, 14'b00_00_0_0_0_0_0_0_0_0_0_0};

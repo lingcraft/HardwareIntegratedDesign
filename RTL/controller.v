@@ -26,7 +26,7 @@ module controller(
 	// decode stage
 	input  wire [5:0] opD,
 	input  wire [5:0] functD,
-	input  wire [5:0] rtD,
+	input  wire [4:0] rtD,
 	output wire pcsrcD,
 	output wire branchD,
 	input  wire equalD,
@@ -64,26 +64,26 @@ module controller(
 	// execute stage
 	wire memwriteE;
 
-	maindec md(
+	maindec md (
 		.op 		(opD		),
 		.funct 		(functD		),
 		.rt 		(rtD 		),
-		.memtoreg 	(memtoregD	),
-		.memwrite 	(memwriteD	),
-		.branch 	(branchD	),
+		.aluop 		(aluopD		),
 		.alusrc 	(alusrcD	),
-		.regdst 	(regdstD	),
+		.hilowrite 	(hilowriteD	),
 		.regwrite 	(regwriteD	),
+		.regdst 	(regdstD	),
+		.memwrite 	(memwriteD	),
+		.memtoreg 	(memtoregD	),
+		.branch 	(branchD	),
 		.bal 		(balD		),
 		.jump 		(jumpD		),
 		.jal 		(jalD 		),
 		.jr 		(jrD 		),
-		.jalr 		(jalrD 		),
-		.aluop 		(aluopD		),
-		.hilowrite 	(hilowriteD	)
+		.jalr 		(jalrD 		)
 	);
 
-	aludec ad(
+	aludec ad (
 		.funct 		(functD		),
 		.aluop 		(aluopD		),
 		.alucontrol	(alucontrolD)
@@ -91,7 +91,7 @@ module controller(
 
 	assign pcsrcD = branchD & equalD;
 
-	flopenrc #(11) regE(
+	flopenrc #(11) regE (
 		clk,
 		rst,
 		~stallE,
@@ -100,13 +100,13 @@ module controller(
 		{memtoregE,memwriteE,alusrcE,regdstE,regwriteE,alucontrolE}
 	);
 	
-	flopr #(3) regM(
+	flopr #(3) regM (
 		clk,rst,
 		{memtoregE,memwriteE,regwriteE},
 		{memtoregM,memwriteM,regwriteM}
 	);
 
-	flopr #(2) regW(
+	flopr #(2) regW (
 		clk,rst,
 		{memtoregM,regwriteM},
 		{memtoregW,regwriteW}

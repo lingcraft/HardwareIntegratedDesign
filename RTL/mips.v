@@ -27,13 +27,14 @@ module mips(
 	input  wire [31:0] instrF,
 	output wire memwriteM,
 	output wire [31:0] aluoutM,
-	output wire [31:0] writedataM,
-	input  wire [31:0] readdataM 
+	output wire [31:0] writedata2M,
+	input  wire [31:0] readdataM,
+	output wire [3:0] selM 
 	);
 	
 	wire [5:0] opD;
 	wire [5:0] functD;
-	wire [5:0] rtD;
+	wire [4:0] rtD;
 	wire pcsrcD;
 	wire branchD;
 	wire equalD;
@@ -58,7 +59,7 @@ module mips(
 	wire memtoregW;
 	wire regwriteW;
 	
-	controller c(
+	controller c (
 		.clk		(clk		),
 		.rst 		(rst		),
 		// decode stage
@@ -91,7 +92,7 @@ module mips(
 		.regwriteW	(regwriteW	)
 	);
 
-	datapath dp(
+	datapath dp (
 		.clk		(clk		),
 		.rst 		(rst 		),
 		// fetch stage
@@ -122,8 +123,9 @@ module mips(
 		.memtoregM	(memtoregM	),
 		.regwriteM	(regwriteM	),
 		.aluoutM	(aluoutM	),
-		.writedataM	(writedataM	),
+		.writedata2M(writedata2M),
 		.readdataM	(readdataM	),
+		.selM		(selM		),
 		// write back stage
 		.memtoregW	(memtoregW	),
 		.regwriteW	(regwriteW	)

@@ -24,7 +24,7 @@ module top(
 	input  wire clk,
 	input  wire rst,
 	output wire [31:0] writedata,
-	output wire [31:0] dataadr,
+	output wire [31:0] dataaddr,
 	output wire memwrite
 	);
 
@@ -32,35 +32,38 @@ module top(
 	wire [31:0] instr;
 	wire [31:0] readdata;
 	wire [39:0] ascii;
+	wire [3:0] sel;
 
-	mips mips(
-		.clk			(clk			),
-		.rst			(rst			),
-		.pcF			(pc				),
-		.instrF			(instr			),
-		.memwriteM		(memwrite		),
-		.aluoutM		(dataadr		),
-		.writedataM		(writedata		),
-		.readdataM		(readdata		)
+	mips mips (
+		.clk		(clk		),
+		.rst		(rst		),
+		.pcF		(pc			),
+		.instrF		(instr		),
+		.memwriteM	(memwrite	),
+		.aluoutM	(dataaddr	),
+		.writedata2M(writedata	),
+		.readdataM	(readdata	),
+		.selM		(sel		)
 	);
 
-	instdec instdec(
-		.instr 			(instr 			),
-		.ascii			(ascii			)
+	instdec instdec (
+		.instr 		(instr		),
+		.ascii		(ascii		)
 	);
 	
-	inst_mem imem(
-		.clka			(~clk			),
-		.addra			(pc				),
-		.douta			(instr			)
+	inst_mem imem (
+		.clka		(~clk		),
+		.addra		(pc			),
+		.douta		(instr		)
 	);
 
-	data_mem dmem(
-		.clka			(~clk 			),
-		.wea			({3'b0,memwrite}),
-		.addra			(dataadr 		),
-		.dina			(writedata		),
-		.douta			(readdata 		)
+	data_mem dmem (
+		.clka		(~clk		),
+		.ena		(memwrite	),
+		.wea		(sel		),
+		.addra		(dataaddr	),
+		.dina		(writedata	),
+		.douta		(readdata	)
 	);
 
 endmodule

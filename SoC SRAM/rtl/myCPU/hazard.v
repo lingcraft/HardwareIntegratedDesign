@@ -30,7 +30,6 @@ module hazard(
 	output wire [1:0] forwardaD,
 	output wire [1:0] forwardbD,
 	output wire stallD,
-	output wire forwardb2D,
 	// execute stage
 	input  wire [4:0] rsE,
 	input  wire [4:0] rtE,

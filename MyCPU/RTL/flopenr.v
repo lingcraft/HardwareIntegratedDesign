@@ -31,7 +31,7 @@ module flopenr #(parameter width = 8) (
 	always @ (posedge clk)
 	begin
 		if (rst)
-			q <= 32'h0;
+			q <= 32'hbfc0_0000;
 		else if (en)
 			q <= d;
 	end

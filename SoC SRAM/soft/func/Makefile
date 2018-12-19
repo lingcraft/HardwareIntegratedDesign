@@ -22,7 +22,6 @@ compile:main.bin main.data convert
 	mv *.coe     $(OBJDIR)/.
 	mv *.mif     $(OBJDIR)/.
 	cp $(OBJDIR)/inst_ram.mif  $(OBJDIR)/axi_ram.mif
-	cp $(OBJDIR)/inst_ram.coe  $(OBJDIR)/axi_ram.coe
 
 main.bin:main.elf
 	${CROSS_COMPILE}objcopy -O binary -j .text $< $@ 

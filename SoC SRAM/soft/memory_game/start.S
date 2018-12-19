@@ -49,8 +49,16 @@
 	.globl	__main
 _start:
 start:
-    disable_trace_cmp_s
-    disable_num_monitor_s
+    sw zero,-0x7004(zero)
+    sw zero,-0x7004(zero)
+    sw zero,-8(zero)      #disable trace_cmp
+    sw zero,-0x7004(zero)
+    sw zero,-0x7004(zero)
+
+    li  t0,NUM_MONITOR_ADDR
+    sw  zero, 0x0(t0)     #disable num monitor
+    sw zero,-0x7004(zero)
+    sw zero,-0x7004(zero)
 
     lui t2,0x0040    
 	mtc0	t2, c0_status

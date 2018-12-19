@@ -37,6 +37,7 @@ module datapath(
 	input  wire jalrD,
 	output wire [5:0] opD,
 	output wire [5:0] functD,
+	output wire [4:0] rsD,
 	output wire [4:0] rtD,
 	input  wire [1:0] hilowriteD,
 	// execute stage
@@ -78,7 +79,6 @@ module datapath(
 	wire [31:0] ascii;
 	wire [1:0] forwardaD;
 	wire [1:0] forwardbD;
-	wire [4:0] rsD;
 	wire [4:0] rdD;
 	wire [4:0] saD;
 	wire flushD;

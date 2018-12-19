@@ -28,7 +28,6 @@ LEAF(n75_ft_adel_ex_test)
  ##2
     li    s2, 0x06
     TEST_FT_ADEL(0xa101bbed)
-    mtc0  s4, c0_epc;
     la    s5, 1f
     sw    t0, 4(t0)
     sw    s4, 4(t0) 
@@ -49,7 +48,6 @@ LEAF(n75_ft_adel_ex_test)
  ##3
     li    s2, 0x06
     TEST_FT_ADEL(0x84790977)
-    mtc0  s4, c0_epc;
     la    s5, 1f
     mthi  t0
     divu  zero, t0, s0
@@ -79,7 +77,6 @@ LEAF(n75_ft_adel_ex_test)
  ##5
     li    s2, 0x06
     TEST_FT_ADEL(0xaf9edafa)
-    mtc0  s4, c0_epc;
     la    s5, 1f
     mtlo  t0
     multu t0, s0
@@ -111,7 +108,6 @@ LEAF(n75_ft_adel_ex_test)
  ##7
     li    s2, 0x06
     TEST_FT_ADEL(0x827f97ab)
-    mtc0  s4, c0_epc;
     la    s5, 1f
     .set mips32
 1:  eret

@@ -21,6 +21,15 @@
 
 
 module mips(
+	// input  wire clk,
+	// input  wire rst,
+	// output wire [31:0] pcF,
+	// input  wire [31:0] instrF,
+	// output wire memwriteM,
+	// output wire [31:0] aluoutM,
+	// output wire [31:0] writedata2M,
+	// input  wire [31:0] readdataM,
+	// output wire [3:0] selM
 	input  wire clk,
 	input  wire resetn,
 	input  wire [5:0] int,

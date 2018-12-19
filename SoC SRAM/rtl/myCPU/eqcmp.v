@@ -24,7 +24,7 @@
 module eqcmp(
 	input wire [31:0] a,b,
 	input wire [5:0] op,
-	input wire [5:0] rt,
+	input wire [4:0] rt,
 	output reg y
     );
 
@@ -34,7 +34,7 @@ module eqcmp(
 	 		`BEQ:	y <= (a == b);
 	 		`BNE:	y <= (a != b);
 	 		`BGTZ:	y <= (!a[31] && a != `ZeroWord);
-	 		`BLEZ:	y <= (a[31] && a == `ZeroWord);
+	 		`BLEZ:	y <= (a[31] || a == `ZeroWord);
 	 		`REGIMM_INST:
 	 		begin
 	 			case (rt)

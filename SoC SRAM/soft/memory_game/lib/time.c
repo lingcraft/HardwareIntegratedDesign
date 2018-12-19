@@ -4,11 +4,8 @@ unsigned long _get_count()
 {
     unsigned long _contval;
     asm volatile(
-        "lui $25, 0xbfb0\n\t"
-        "lw %0,-0x2000($25)\n\t"
+        "lw %0,-0x2000($0)\n\t"
         :"=r"(_contval)
-        :
-        :"$25"
         );
     return  _contval;
 }

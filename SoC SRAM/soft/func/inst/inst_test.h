@@ -1272,7 +1272,8 @@
 /*75*/
 #define TEST_FT_ADEL(addr) \
     li  s4, addr; \
-    li  a3, addr;
+    li  a3, addr; \
+    mtc0 s4, c0_epc;
 
 /*76*/
 #define TEST_RI_EX(inst) \

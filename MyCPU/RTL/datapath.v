@@ -163,7 +163,6 @@ module datapath(
 		.forwardaD		(forwardaD		),
 		.forwardbD		(forwardbD		),
 		.stallD			(stallD			),
-		.forwardb2D		(forwardb2D		),
 		// execute stage
 		.rsE 			(rsE 			),
 		.rtE 			(rtE 			),

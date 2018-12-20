@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module flopenrc #(parameter width = 8) (
+module flopenrc #(parameter width = 8)(
 	input wire clk,
 	input wire rst,
 	input wire en,

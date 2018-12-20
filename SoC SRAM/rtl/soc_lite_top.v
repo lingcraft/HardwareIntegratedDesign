@@ -179,7 +179,7 @@ bridge_1x2 bridge_1x2(
 //data ram
 data_ram data_ram
 (
-    .clka  (cpu_clk             ),   
+    .clka  (~cpu_clk            ),   
     .ena   (data_sram_en        ),
     .wea   (data_sram_wen       ),   //3:0
     .addra (data_sram_addr[17:2]),   //15:0

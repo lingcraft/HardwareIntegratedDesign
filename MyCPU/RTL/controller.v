@@ -26,16 +26,21 @@ module controller(
 	// decode stage
 	input  wire [5:0] opD,
 	input  wire [5:0] functD,
+	input  wire [4:0] rsD,
 	input  wire [4:0] rtD,
+	output wire [1:0] hilowriteD,
 	output wire pcsrcD,
 	output wire branchD,
 	input  wire equalD,
 	output wire balD,
-	output wire jumpD,
+	output wire jD,
 	output wire jalD,
 	output wire jrD,
 	output wire jalrD,
-	output wire [1:0] hilowriteD,
+	output wire syscallD,
+	output wire breakD,
+	output wire eretD,
+	output wire invalidityD,
 	// execute stage
 	input  wire flushE,
 	input  wire stallE,
@@ -49,9 +54,12 @@ module controller(
 	output wire memtoregM,
 	output wire memwriteM,
 	output wire	regwriteM,
+	output wire cp0writeM,
+	input  wire flushM,
 	// write back stage
 	output wire memtoregW,
-	output wire regwriteW
+	output wire regwriteW,
+	input  wire flushW
     );
 	
 	// decode stage
@@ -62,12 +70,15 @@ module controller(
 	wire regdstD;
 	wire regwriteD;
 	wire [4:0] alucontrolD;
+	wire cp0writeD;
 	// execute stage
 	wire memwriteE;
+	wire cp0writeE;
 
-	maindec md (
+	maindec maindec (
 		.op 		(opD		),
 		.funct 		(functD		),
+		.rs			(rsD		),
 		.rt 		(rtD 		),
 		.aluop 		(aluopD		),
 		.alusrc 	(alusrcD	),
@@ -78,13 +89,18 @@ module controller(
 		.memtoreg 	(memtoregD	),
 		.branch 	(branchD	),
 		.bal 		(balD		),
-		.jump 		(jumpD		),
+		.j 			(jD			),
 		.jal 		(jalD 		),
 		.jr 		(jrD 		),
-		.jalr 		(jalrD 		)
+		.jalr 		(jalrD 		),
+		.cp0write	(cp0writeD	),
+		.syscall 	(syscallD	),
+		.break		(breakD		),
+		.eret		(eretD		),
+		.invalidity (invalidityD)
 	);
 
-	aludec ad (
+	aludec aludec (
 		.funct 		(functD		),
 		.aluop 		(aluopD		),
 		.alucontrol	(alucontrolD)
@@ -92,23 +108,23 @@ module controller(
 
 	assign pcsrcD = branchD & equalD;
 
-	flopenrc #(11) regE (
+	flopenrc #(12) regE (
 		clk,
 		rst,
 		~stallE,
 		flushE,
-		{memtoregD,memwriteD,alusrcD,regdstD,regwriteD,alucontrolD},
-		{memtoregE,memwriteE,alusrcE,regdstE,regwriteE,alucontrolE}
+		{memtoregD,memwriteD,alusrcD,regdstD,regwriteD,alucontrolD,cp0writeD},
+		{memtoregE,memwriteE,alusrcE,regdstE,regwriteE,alucontrolE,cp0writeE}
 	);
 	
-	flopr #(3) regM (
-		clk,rst,
-		{memtoregE,memwriteE,regwriteE & ~overflow},
-		{memtoregM,memwriteM,regwriteM}
+	floprc #(4) regM (
+		clk,rst,flushM,
+		{memtoregE,memwriteE,regwriteE & ~overflow,cp0writeE},
+		{memtoregM,memwriteM,regwriteM,cp0writeM}
 	);
 
-	flopr #(2) regW (
-		clk,rst,
+	floprc #(2) regW (
+		clk,rst,flushW,
 		{memtoregM,regwriteM},
 		{memtoregW,regwriteW}
 	);

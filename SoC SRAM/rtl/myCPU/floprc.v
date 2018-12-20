@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module floprc #(parameter width = 8) (
+module floprc #(parameter width = 8)(
 	input wire clk,
 	input wire rst,
 	input wire clear,

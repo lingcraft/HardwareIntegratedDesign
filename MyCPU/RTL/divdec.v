@@ -22,16 +22,16 @@
 `include "defines.vh"
 
 module divdec(
-	input wire divready,
+	input wire divreadyE,
 	input wire [4:0] alucontrolE,
 	input wire [1:0] hilowriteE,
-	output wire divstart,
+	output wire divstartE,
 	output wire divsignalE,
 	output wire signeddivsignalE,
 	output wire [1:0] hilowrite2E
     );
 	
-	assign divstart = (alucontrolE == `DIV_CONTROL || alucontrolE == `DIVU_CONTROL) && (divready == 1'b0) ? 1'b1:1'b0;
+	assign divstartE = (alucontrolE == `DIV_CONTROL || alucontrolE == `DIVU_CONTROL) && (divreadyE == 1'b0) ? 1'b1:1'b0;
 
 	assign divsignalE = ((alucontrolE == `DIV_CONTROL) || (alucontrolE == `DIVU_CONTROL));
 
@@ -39,8 +39,8 @@ module divdec(
 							  (alucontrolE == `DIVU_CONTROL) ? 1'b0:
 							  1'bx;
 							  
-	assign hilowrite2E = (divsignalE && divready) ? 2'b11:
-						 (divsignalE && !divready) ? 2'b00:
+	assign hilowrite2E = (divsignalE && divreadyE) ? 2'b11:
+						 (divsignalE && !divreadyE) ? 2'b00:
 						 hilowriteE;
 
 endmodule

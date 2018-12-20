@@ -27,6 +27,7 @@ module alu(
 	input  wire [4:0] sa,
 	input  wire [4:0] alucontrol,
 	input  wire [31:0] hialuin,loaluin,
+	input  wire [31:0] cp0aluin,
 	output reg  [31:0] y,
 	output reg  [31:0] hialuout,loaluout,
 	output reg  overflow
@@ -65,6 +66,10 @@ module alu(
 			`SLTU_CONTROL:	y <= (a < b);
 			`MULT_CONTROL:	{hialuout,loaluout} <= $signed(a) * $signed(b);
 			`MULTU_CONTROL:	{hialuout,loaluout} <= a * b;
+
+			// 特权
+			`MFC0_CONTROL:	y <= cp0aluin;
+			`MTC0_CONTROL:	y <= b; 
 			
 			default: y <= 32'b0;
 		endcase
@@ -73,14 +78,8 @@ module alu(
 	always @ (*)
 	begin
 		case (alucontrol)
-			`ADD_CONTROL:
-			begin
-				overflow <= a[31] & b[31] & ~y[31] | ~a[31] & ~b[31] & y[31];
-			end
-			`SUB_CONTROL:
-			begin
-				overflow <= a[31] & ~b[31] & ~y[31] | ~a[31] & b[31] & y[31];
-			end
+			`ADD_CONTROL: overflow <= a[31] & b[31] & ~y[31] | ~a[31] & ~b[31] & y[31];
+			`SUB_CONTROL: overflow <= a[31] & ~b[31] & ~y[31] | ~a[31] & b[31] & y[31];
 			default: overflow <= 0;
         endcase
 	end

@@ -83,6 +83,10 @@ module aludec(
 
 			// 访存
 			`MEM_OP:   alucontrol <= `ADD_CONTROL;
+
+			// 特权
+			`MFC0_OP:  alucontrol <= `MFC0_CONTROL;
+			`MTC0_OP:  alucontrol <= `MTC0_CONTROL;
 			
 			default: alucontrol <= 5'b0;
 		endcase

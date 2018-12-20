@@ -89,12 +89,10 @@
 `define SB  				6'b101000
 `define SH  				6'b101001
 `define SW  				6'b101011
-`define MAX 6'b111111
+`define MAX 				6'b111111
 
 `define SYSCALL 			6'b001100
 `define BREAK 				6'b001101
-   
-`define ERET 				5'b10000
 
 `define R_TYPE 				6'b000000
 `define REGIMM_INST 		6'b000001
@@ -102,6 +100,7 @@
 //change the SPECIAL2_INST from 6'b011100 to 6'b010000
 `define MTC0 				5'b00100
 `define MFC0 				5'b00000
+`define ERET 				5'b10000
 
 // ALU OP 4bit
 
@@ -118,7 +117,7 @@
 `define R_TYPE_OP 			4'b1000
 `define MFC0_OP 			4'b1001
 `define MTC0_OP 			4'b1010
-`define MAX_OP 4'b1011
+`define MAX_OP 				4'b1011
 `define USELESS_OP 			4'b1111
 
 // ALU CONTROL 5bit

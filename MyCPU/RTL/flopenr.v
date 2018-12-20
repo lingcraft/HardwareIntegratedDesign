@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module flopenr #(parameter width = 8) (
+module flopenr #(parameter width = 8)(
 	input wire clk,
 	input wire rst,
 	input wire en,
@@ -31,7 +31,7 @@ module flopenr #(parameter width = 8) (
 	always @ (posedge clk)
 	begin
 		if (rst)
-			q <= 32'hbfc0_0000;
+			q <= 0;
 		else if (en)
 			q <= d;
 	end

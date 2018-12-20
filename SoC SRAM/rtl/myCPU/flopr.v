@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module flopr #(parameter width = 8) (
+module flopr #(parameter width = 8)(
 	input wire clk,
 	input wire rst,
 	input wire [width-1:0] d,

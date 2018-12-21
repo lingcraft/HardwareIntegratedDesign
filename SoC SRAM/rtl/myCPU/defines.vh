@@ -134,6 +134,8 @@
 `define SRLV_CONTROL    	5'b01100
 `define SRAV_CONTROL    	5'b01101
 
+`define MAX_CONTROL			5'b01110	
+
 `define ADD_CONTROL     	5'b10000
 `define ADDU_CONTROL    	5'b10001
 `define SUB_CONTROL     	5'b10010
@@ -144,7 +146,7 @@
 `define MULT_CONTROL    	5'b11000
 `define MULTU_CONTROL   	5'b11001
 `define DIV_CONTROL     	5'b11010
-`define DIVU_CONTROL    	5'b11011
+`define DIVU_CONTROL    	5'b11011		
 
 `define MFHI_CONTROL  		5'b11100
 `define MTHI_CONTROL  		5'b11101

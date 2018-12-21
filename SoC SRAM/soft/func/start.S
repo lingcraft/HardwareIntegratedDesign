@@ -343,7 +343,7 @@ locate:
     nop                #####
 kseg1_kseg0:
 inst_test:
-    jal n1_lui_test    #lui
+    jal n1_max_test    #lui
     nop
     jal wait_1s
     nop

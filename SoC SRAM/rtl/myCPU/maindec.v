@@ -157,6 +157,9 @@ module maindec(
 				endcase
 			end
 			
+			//
+			`MAX:	controls <= {`MAX_OP, 18'b00_00_1_1_0_0_0_0_0_0_0_0_0_0_0_0};
+
 			default: invalidity <= 1'b1;
 		endcase
 	end

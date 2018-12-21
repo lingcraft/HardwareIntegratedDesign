@@ -37,7 +37,7 @@ module exceptiondec(
 	always @ (*)
 	begin
 		if (rst)
-			exceptiontype <= 32'b0;
+			exceptiontype <= 32'h0;
 		else 
 		begin
 			if (((cp0cause[15:8] & cp0status[15:8]) != 8'h00) && !cp0status[1] && cp0status[0])

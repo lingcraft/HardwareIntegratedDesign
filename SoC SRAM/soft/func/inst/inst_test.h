@@ -9,6 +9,14 @@
     bne   t0, a0, inst_error; \
     nop
 
+#define TEST_MAX(in_a, in_b, ref) \
+    LI (t0, in_a); \
+    LI (t1, in_b); \
+    LI (v1, ref); \
+    .word 0xfd091000; \
+    bne v0, v1, inst_error; \
+    nop
+
 /* 2 */
 #define TEST_ADDU(in_a, in_b, ref) \
     LI (t0, in_a); \

@@ -75,7 +75,7 @@ module mips(
 
 	assign debug_wb_pc = pcW;
 	// assign debug_wb_rf_wen = {4{regwriteW}};
-	assign debug_wb_rf_wen = {4'b0};
+	assign debug_wb_rf_wen = {4{1'b0}};
 	assign debug_wb_rf_wnum = writeregW;
 	assign debug_wb_rf_wdata = resultW;
 	
